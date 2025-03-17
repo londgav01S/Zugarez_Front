@@ -1,0 +1,122 @@
+.container {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    width: 500px;
+    background: #f3ecec;
+}
+
+
+.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 500px;
+    border-radius: 3px;
+    gap: 10px;
+    background: #f3ecec;
+    box-shadow: 0px 0px 4px #5c5c5c,
+    -0px -0px 4px #d6d6d6;
+}
+
+.crearProducto {
+    color: #00328f;
+    text-transform: uppercase;
+    padding: 10px;
+    letter-spacing: 2px;
+    display: block;
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.selectEstado{
+    color: #00328f;
+    width:100%;
+}
+
+
+
+
+.inputBox {
+    position: relative;
+    width: 250px;
+    margin: 10px;
+}
+
+
+.inputBox input, .selectEstado {
+    width: 100%;
+    padding: 20px 20px 10px;
+    outline: none;
+    border: none;
+    color: #000a1c;
+    font-size: 1em;
+    background: transparent;
+    border-left: 2px solid #00328f;
+    border-bottom: 2px solid #00328f;
+    border-bottom-left-radius: 8px;
+}
+
+.inputBox span{
+    margin-top: 5px;
+    position: absolute;
+    left: 0;
+    transform: translateY(-4px);
+    margin-left: 10px;
+    padding: 5px;
+    pointer-events: none;
+    font-size: 12px;
+    color: #00328f;
+    text-transform: uppercase;
+    transition: 0.5s;
+    letter-spacing: 3px;
+    border-radius: 8px;
+}
+
+.inputBox input:valid~span,
+.inputBox input:focus~span{
+    transform: translateX(113px) translateY(-15px);
+    font-size: 0.8em;
+    padding: 5px 10px;
+    background: #00328f;
+    letter-spacing: 0.2em;
+    color: #fff;
+    border: 2px;
+
+    & .mailSpan{
+        margin-left: 50px;
+    }
+}
+
+.inputBox input:valid,
+.inputBox input:focus {
+    border: 2px solid #00328f;
+    border-radius: 8px;
+    & .mailSpan{
+        margin-left: 50px;
+    }
+}
+
+.enter {
+    color: #00328f;
+    height: 45px;
+    width: 100px;
+    border-radius: 5px;
+    border: 2px solid #00328f;
+    cursor: pointer;
+    background-color: transparent;
+    transition: 0.5s;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 1em;
+}
+
+.enter:hover {
+    background-color: #00328f;
+    color: white;
+}
+
