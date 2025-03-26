@@ -1,0 +1,49 @@
+.detalleContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 30px;
+    background: #f3ecec;
+}
+
+.detalleTitle, .consultarDetalleTitle{
+    color: #00328f;
+    text-transform: uppercase;
+    padding: 10px;
+    letter-spacing: 2px;
+    display: block;
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.botonDetalle {
+    color: #00328f;
+    height: 45px;
+    width: 100px;
+    border-radius: 5px;
+    border: 2px solid #00328f;
+    cursor: pointer;
+    background-color: transparent;
+    transition: 0.5s;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 1em;
+}
+
+.selectProducto{
+    width: 100%;
+    padding: 20px 20px 10px;
+    margin-bottom: 5px;
+    outline: none;
+    border: none;
+    color: #000a1c;
+    font-size: 1em;
+    background: transparent;
+    border-left: 2px solid #00328f;
+    border-bottom: 2px solid #00328f;
+    border-bottom-left-radius: 8px;
+}

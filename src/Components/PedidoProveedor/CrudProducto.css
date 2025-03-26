@@ -120,3 +120,11 @@
     color: white;
 }
 
+.nose {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100vh;  /* Usa la altura completa de la ventana */
+    padding: 10px; /* Agrega espacio para que no se corten elementos */
+    box-sizing: border-box; /* Asegura que padding no afecte el tamaño real */
+}
