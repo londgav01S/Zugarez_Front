@@ -9,7 +9,7 @@ function CrudProducto() {
     const [cantidad, setCantidad] = useState('');
     const [marca, setMarca] = useState('');
     const [fechaVencimiento, setFechaV] = useState('');
-    const [estado, setEstado] = useState("por vencer");
+    const [estado, setEstado] = useState("perdidos");
     const handleRegister = () => {
         const producto = {
             nombre,
@@ -88,9 +88,8 @@ function CrudProducto() {
                 <div className="inputBox">
                     <span>Estado</span>
                     <select className={"selectEstado"} value={estado} onChange={(e) => setEstado(e.target.value)}>
-                        <option value="por vencer">Por vencer</option>
-                        <option value="vencido">Vencido</option>
-                        <option value="a tiempo">A tiempo</option>
+                        <option value="por vencer">disponibles</option>
+                        <option value="vencido">vendidos</option>
                     </select>
                 </div>
                 <button className="enter" onClick={handleRegister}>Registrar Producto</button>

@@ -1,119 +1,164 @@
 import React, { useState, useEffect } from "react";
 import {
-    getStock,
-    getStockByProduct,
     createInventoryDetail,
     updateInventoryDetail,
-    deleteInventoryDetail
+    deleteInventoryDetail,
+    getInventoryDetails,
+    getProducts // <-- Importamos la función para obtener productos
 } from "../../Services/InventarioApiService";
 import "./Detalle.css";
 
 const DetalleInventarioView = () => {
-    const [stock, setStock] = useState([]);
-    const [productStock, setProductStock] = useState(null);
-    const [selectedProduct, setSelectedProduct] = useState("");
-    const [details, setDetails] = useState([]);
-    const [detailForm, setDetailForm] = useState({
-        id: "",
-        productoId: "",
-        descripcion: "",
-        cantidad: 0
+    const [inventoryDetails, setInventoryDetails] = useState([]);
+    const [products, setProducts] = useState([]); // Lista de productos
+    const [selectedDetail, setSelectedDetail] = useState(null);
+    const [formData, setFormData] = useState({
+        productId: "",
+        cantidad: 0,
+        caducados: 0,
+        disponibles: 0,
+        vendidos: 0,
+        perdidos: 0
     });
 
+    const [showModal, setShowModal] = useState(false);
+
     useEffect(() => {
-        fetchStock();
+        fetchInventoryDetails();
+        fetchProducts(); // Cargar lista de productos
     }, []);
 
-    const fetchStock = async () => {
-        const data = await getStock();
-        setStock(data);
+    const fetchInventoryDetails = async () => {
+        const data = await getInventoryDetails();
+        setInventoryDetails(data);
     };
 
-    const fetchProductStock = async () => {
-        if (selectedProduct) {
-            const data = await getStockByProduct(selectedProduct);
-            setProductStock(data);
-            setDetails(data.detalles || []); // Suponiendo que el backend devuelve detalles del producto
+    const fetchProducts = async () => {
+        const data = await getProducts();
+        setProducts(data);
+    };
+
+    // Manejar cambios en el formulario
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    // Abrir modal para agregar nuevo detalle
+    const openCreateModal = () => {
+        setSelectedDetail(null);
+        setFormData({
+            productId: "",
+            cantidad: 0,
+            caducados: 0,
+            disponibles: 0,
+            vendidos: 0,
+            perdidos: 0
+        });
+        setShowModal(true);
+    };
+
+    // Abrir modal para editar un detalle existente
+    const openEditModal = (detail) => {
+        setSelectedDetail(detail);
+        setFormData(detail);
+        setShowModal(true);
+    };
+
+    // Guardar o actualizar detalle
+    const handleSave = async () => {
+        if (!formData.productId) {
+            alert("Selecciona un producto antes de guardar.");
+            return;
         }
-    };
 
-    const handleDetailInputChange = (e) => {
-        setDetailForm({ ...detailForm, [e.target.name]: e.target.value });
-    };
-
-    const handleDetailSubmit = async (e) => {
-        e.preventDefault();
-        if (detailForm.id) {
-            await updateInventoryDetail(detailForm.id, detailForm);
+        if (selectedDetail) {
+            await updateInventoryDetail(selectedDetail.id, formData);
         } else {
-            await createInventoryDetail(detailForm);
+            await createInventoryDetail(formData.productId, formData);
         }
-        setDetailForm({ id: "", productoId: selectedProduct, descripcion: "", cantidad: 0 });
-        fetchProductStock();
+
+        fetchInventoryDetails();
+        setShowModal(false);
     };
 
-    const handleEditDetail = (detail) => {
-        setDetailForm(detail);
-    };
 
-    const handleDeleteDetail = async (id) => {
+    // Eliminar detalle de inventario
+    const handleDelete = async (id) => {
         await deleteInventoryDetail(id);
-        fetchProductStock();
+        fetchInventoryDetails();
     };
 
     return (
-        <div className={"detalleContainer"}>
-            <h2 className={"detalleTitle"}>Detalle de Inventario</h2>
+        <div>
+            <h1>Inventario</h1>
 
-            <button className={"botonDetalle"} onClick={fetchStock}>Actualizar Stock</button>
+            {/* Botón para agregar nuevo detalle */}
+            <button onClick={openCreateModal}>Agregar Detalle</button>
 
-            <h3 className={"consultarDetalleTitle"}>Consultar Detalle por Producto</h3>
-            <select className={"selectProducto"} onChange={(e) => setSelectedProduct(e.target.value)}>
-                <option  value="">Seleccione un producto</option>
-                {stock.map((item) => (
-                    <option key={item.id} value={item.id}>{item.nombre}</option>
+            {/* Tabla de detalles de inventario */}
+            <h2>Detalle de Inventario</h2>
+            <table border="1">
+                <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Caducados</th>
+                    <th>Disponibles</th>
+                    <th>Vendidos</th>
+                    <th>Perdidos</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {inventoryDetails.map((detail) => (
+                    <tr key={detail.id}>
+                        <td>{detail.producto ? detail.producto.nombre : "Desconocido"}</td>
+                        <td>{detail.cantidad}</td>
+                        <td>{detail.caducados}</td>
+                        <td>{detail.disponibles}</td>
+                        <td>{detail.vendidos}</td>
+                        <td>{detail.perdidos}</td>
+                        <td>
+                            <button onClick={() => openEditModal(detail)}>Editar</button>
+                            <button onClick={() => handleDelete(detail.id)}>Eliminar</button>
+                        </td>
+                    </tr>
                 ))}
-            </select>
+                </tbody>
+            </table>
 
-            <button onClick={fetchProductStock} className={"botonDetalle"}>Obtener Detalles</button>
+            {/* Modal para agregar/editar detalle */}
+            {showModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>{selectedDetail ? "Editar Detalle" : "Agregar Detalle"}</h2>
 
-            {productStock && (
-                <>
-                    <h3>Detalles del Producto</h3>
-                    <table border="1">
-                        <thead>
-                        <tr>
-                            <th>Descripción</th>
-                            <th>Cantidad</th>
-                            <th>Acciones</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {details.map((detail) => (
-                            <tr key={detail.id}>
-                                <td>{detail.descripcion}</td>
-                                <td>{detail.cantidad}</td>
-                                <td>
-                                    <button onClick={() => handleEditDetail(detail)} className={"botonDetalle"}>Editar</button>
-                                    <button onClick={() => handleDeleteDetail(detail.id)} className={"botonDetalle"}>Eliminar</button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </>
-            )}
+                        {/* Seleccionar producto en vez de escribir ID */}
+                        <label>Producto:</label>
+                        <select name="productId" value={formData.productId} onChange={handleChange}>
+                            <option value="">Seleccione un producto</option>
+                            {products.map((product) => (
+                                <option key={product.id} value={product.id}>{product.nombre}</option>
+                            ))}
+                        </select>
 
-            {selectedProduct && (
-                <>
-                    <h3 className={"consultarDetalleTitle"}>Agregar/Editar Detalle</h3>
-                    <form onSubmit={handleDetailSubmit}>
-                        <input type="hidden" name="productoId" value={selectedProduct} />
-                        <input type="text" name="descripcion" placeholder="Descripción" value={detailForm.descripcion} onChange={handleDetailInputChange} required />
-                        <input type="number" name="cantidad" placeholder="Cantidad" value={detailForm.cantidad} onChange={handleDetailInputChange} required />
-                        <button className={"botonDetalle"} type="submit">{detailForm.id ? "Actualizar" : "Agregar"}</button>
-                    </form>
-                </>
+                        <label>Cantidad:</label>
+                        <input type="number" name="cantidad" value={formData.cantidad} onChange={handleChange} />
+                        <label>Caducados:</label>
+                        <input type="number" name="caducados" value={formData.caducados} onChange={handleChange} />
+                        <label>Disponibles:</label>
+                        <input type="number" name="disponibles" value={formData.disponibles} onChange={handleChange} />
+                        <label>Vendidos:</label>
+                        <input type="number" name="vendidos" value={formData.vendidos} onChange={handleChange} />
+                        <label>Perdidos:</label>
+                        <input type="number" name="perdidos" value={formData.perdidos} onChange={handleChange} />
+                        <button onClick={handleSave}>Guardar</button>
+                        <button onClick={() => setShowModal(false)}>Cancelar</button>
+                    </div>
+                </div>
             )}
         </div>
     );
