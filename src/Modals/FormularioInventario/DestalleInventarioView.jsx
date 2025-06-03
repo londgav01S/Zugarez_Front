@@ -4,16 +4,17 @@ import {
     updateInventoryDetail,
     deleteInventoryDetail,
     getInventoryDetails,
-    getProducts // <-- Importamos la función para obtener productos
+    getProducts
 } from "../../Services/InventarioApiService";
 import "./Detalle.css";
 
 const DetalleInventarioView = () => {
     const [inventoryDetails, setInventoryDetails] = useState([]);
-    const [products, setProducts] = useState([]); // Lista de productos
+    const [products, setProducts] = useState([]);
     const [selectedDetail, setSelectedDetail] = useState(null);
     const [formData, setFormData] = useState({
         id: "",
+        productoId: "",  // Agregado productoId
         cantidad: 0,
         caducados: 0,
         disponibles: 0,
@@ -25,7 +26,7 @@ const DetalleInventarioView = () => {
 
     useEffect(() => {
         fetchInventoryDetails();
-        fetchProducts(); // Cargar lista de productos
+        fetchProducts();
     }, []);
 
     const fetchInventoryDetails = async () => {
@@ -38,7 +39,6 @@ const DetalleInventarioView = () => {
         setProducts(data);
     };
 
-    // Manejar cambios en el formulario
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -46,11 +46,11 @@ const DetalleInventarioView = () => {
         });
     };
 
-    // Abrir modal para agregar nuevo detalle
     const openCreateModal = () => {
         setSelectedDetail(null);
         setFormData({
             id: "",
+            productoId: "",
             cantidad: 0,
             caducados: 0,
             disponibles: 0,
@@ -60,22 +60,35 @@ const DetalleInventarioView = () => {
         setShowModal(true);
     };
 
-    // Abrir modal para editar un detalle existente
     const openEditModal = (detail) => {
         setSelectedDetail(detail);
-        setFormData(detail);
+        setFormData({
+            id: detail.id,
+            productoId: detail.producto?.id || "",  // Corregido
+            cantidad: detail.cantidad,
+            caducados: detail.caducados,
+            disponibles: detail.disponibles,
+            vendidos: detail.vendidos,
+            perdidos: detail.perdidos
+        });
         setShowModal(true);
     };
 
-    // Guardar o actualizar detalle
     const handleSave = async () => {
-        if (!formData.id) {
+        if (!formData.productoId) {
             alert("Selecciona un producto antes de guardar.");
             return;
         }
 
         if (selectedDetail) {
-            await updateInventoryDetail(selectedDetail.id, formData);
+            await updateInventoryDetail(selectedDetail.id, {
+                productoId: formData.productoId,
+                cantidad: formData.cantidad,
+                caducados: formData.caducados,
+                disponibles: formData.disponibles,
+                vendidos: formData.vendidos,
+                perdidos: formData.perdidos
+            });
         } else {
             await createInventoryDetail(formData.productoId, {
                 cantidad: formData.cantidad,
@@ -84,15 +97,12 @@ const DetalleInventarioView = () => {
                 vendidos: formData.vendidos,
                 perdidos: formData.perdidos
             });
-
         }
 
         fetchInventoryDetails();
         setShowModal(false);
     };
 
-
-    // Eliminar detalle de inventario
     const handleDelete = async (id) => {
         await deleteInventoryDetail(id);
         fetchInventoryDetails();
@@ -102,10 +112,8 @@ const DetalleInventarioView = () => {
         <div>
             <h1>Inventario</h1>
 
-            {/* Botón para agregar nuevo detalle */}
             <button onClick={openCreateModal}>Agregar Detalle</button>
 
-            {/* Tabla de detalles de inventario */}
             <h2>Detalle de Inventario</h2>
             <table border="1">
                 <thead>
@@ -137,33 +145,64 @@ const DetalleInventarioView = () => {
                 </tbody>
             </table>
 
-            {/* Modal para agregar/editar detalle */}
             {showModal && (
                 <div className="modal">
                     <div className="modal-content">
                         <h2>{selectedDetail ? "Editar Detalle" : "Agregar Detalle"}</h2>
 
-                        {/* Seleccionar producto en vez de escribir ID */}
                         <label>Producto:</label>
-                        <select name="productId" value={formData.id} onChange={handleChange}>
+                        <select
+                            name="productoId"
+                            value={formData.productoId}
+                            onChange={handleChange}
+                        >
                             <option value="">Seleccione un producto</option>
                             {products.map((product) => (
-                                <option key={product.id} value={product.id}>{product.nombre}</option>
+                                <option key={product.id} value={product.id}>
+                                    {product.nombre}
+                                </option>
                             ))}
                         </select>
 
                         <label>Cantidad:</label>
-                        <input type="number" name="cantidad" value={formData.cantidad} onChange={handleChange} />
+                        <input
+                            type="number"
+                            name="cantidad"
+                            value={formData.cantidad}
+                            onChange={handleChange}
+                        />
                         <label>Caducados:</label>
-                        <input type="number" name="caducados" value={formData.caducados} onChange={handleChange} />
+                        <input
+                            type="number"
+                            name="caducados"
+                            value={formData.caducados}
+                            onChange={handleChange}
+                        />
                         <label>Disponibles:</label>
-                        <input type="number" name="disponibles" value={formData.disponibles} onChange={handleChange} />
+                        <input
+                            type="number"
+                            name="disponibles"
+                            value={formData.disponibles}
+                            onChange={handleChange}
+                        />
                         <label>Vendidos:</label>
-                        <input type="number" name="vendidos" value={formData.vendidos} onChange={handleChange} />
+                        <input
+                            type="number"
+                            name="vendidos"
+                            value={formData.vendidos}
+                            onChange={handleChange}
+                        />
                         <label>Perdidos:</label>
-                        <input type="number" name="perdidos" value={formData.perdidos} onChange={handleChange} />
-                        <button onClick={handleSave}>Guardar</button>
-                        <button onClick={() => setShowModal(false)}>Cancelar</button>
+                        <input
+                            type="number"
+                            name="perdidos"
+                            value={formData.perdidos}
+                            onChange={handleChange}
+                        />
+                        <div style={{ marginTop: "10px" }}>
+                            <button onClick={handleSave}>Guardar</button>
+                            <button onClick={() => setShowModal(false)}>Cancelar</button>
+                        </div>
                     </div>
                 </div>
             )}

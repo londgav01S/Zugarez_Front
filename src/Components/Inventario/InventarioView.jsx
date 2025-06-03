@@ -36,7 +36,8 @@ function InventarioView() {
         <div>
             <h1>INVENTARIO</h1>
             {productosPorVencer.length > 0 && (
-                <div style={{ background: "#fff4cc", padding: "10px", border: "1px solid #cc9900", marginBottom: "20px" }}>
+                <div
+                    style={{background: "#fff4cc", padding: "10px", border: "1px solid #cc9900", marginBottom: "20px"}}>
                     <h3>⚠️ Productos por vencer en los próximos 10 días:</h3>
                     <ul>
                         {productosPorVencer.map(p => (
@@ -47,20 +48,49 @@ function InventarioView() {
             )}
 
             {/* Contenedor para los botones con flexbox */}
-            <div style={{display: "flex", gap: "10px"}}>
-                <button onClick={() => navigate("/producto")}>Productos</button>
-                <button onClick={() => navigate("/inventario/detalle")}>Detalle Inventario</button>
-                <button onClick={() => navigate("/verificacion")}>Registrar Fecha de Verificación</button>
-                <button onClick={() => navigate("/caducados")}>Listar Productos Caducados</button>
-                <button onClick={() => navigate("/desecho")}>Registrar Desecho con Justificación</button>
-                <button onClick={() => navigate("/plan")}>Agregar Observaciones al Plan de Abastecimiento</button>
-                <button onClick={() => navigate("/pedido")}>Registrar Pedido a Proveedor</button>
-                <button onClick={() => navigate("/historial-pedidos")}>Ver Historial de Pedidos</button>
-                <button onClick={() => navigate("/pedido")}>Validar Cantidad Mínima por Producto (integrado)</button>
-                <button onClick={() => navigate("/recepcion")}>Registrar Conformidad de Pedido Recibido</button>
-                <button onClick={() => navigate("/resumen")}>Resumen de Entradas/Salidas por Producto</button>
-
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: "10px",
+                maxWidth: "900px",
+                margin: "0 auto",
+                padding: "20px"
+            }}>
+                {[
+                    {path: "/producto", label: "Productos"},
+                    {path: "/inventario/detalle", label: "Detalle Inventario"},
+                    {path: "/verificacion", label: "Registrar Fecha de Verificación"},
+                    {path: "/caducados", label: "Listar Productos Caducados*"},
+                    {path: "/desecho", label: "Registrar Desecho con Justificación*"},
+                    {path: "/plan", label: "Agregar Observaciones al Plan de Abastecimiento"},
+                    {path: "/pedido", label: "Registrar Pedido a Proveedor*"},
+                    {path: "/historial-pedidos", label: "Ver Historial de Pedidos*"},
+                    {path: "/pedido", label: "Validar Cantidad Mínima por Producto (integrado)"},
+                    {path: "/recepcion", label: "Registrar Conformidad de Pedido Recibido"},
+                    {path: "/resumen", label: "Resumen de Entradas/Salidas por Producto*"},
+                ].map(({path, label}) => (
+                    <button
+                        key={path + label}
+                        onClick={() => navigate(path)}
+                        style={{
+                            padding: "12px 16px",
+                            backgroundColor: "#4CAF50",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                            transition: "background-color 0.3s ease",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+                        }}
+                        onMouseEnter={e => e.target.style.backgroundColor = "#45a049"}
+                        onMouseLeave={e => e.target.style.backgroundColor = "#4CAF50"}
+                    >
+                        {label}
+                    </button>
+                ))}
             </div>
+
         </div>
     );
 }
