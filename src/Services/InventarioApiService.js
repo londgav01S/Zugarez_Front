@@ -206,3 +206,128 @@ export const getConsolidatedInventory = async () => {
         return {};
     }
 };
+
+export const registrarFechaVerificacion = async (inventarioId, fechaVerificacion) => {
+    try {
+        const response = await fetch(`http://localhost:8080/api/inventario/verificar/${inventarioId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ fechaVerificacion }),
+        });
+
+        if (!response.ok) throw new Error("Error al registrar fecha de verificación");
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        return null;
+    }
+};
+
+export const getProductosCaducadosPorFechas = async (desde, hasta) => {
+    try {
+        const response = await fetch(`http://localhost:8080/api/productos/caducados?desde=${desde}&hasta=${hasta}`);
+        if (!response.ok) throw new Error("Error al obtener productos caducados por fechas");
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        return [];
+    }
+};
+
+export const registrarDesecho = async (salida) => {
+    try {
+        const response = await fetch("http://localhost:8080/api/entrada-salida/desecho", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(salida),
+        });
+
+        if (!response.ok) throw new Error("Error al registrar desecho");
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        return null;
+    }
+};
+
+export const getProductosPorVencer = async () => {
+    try {
+        const response = await fetch("http://localhost:8080/api/productos/por-vencer");
+        if (!response.ok) throw new Error("Error al obtener productos por vencer");
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        return [];
+    }
+};
+
+export const registrarPlanAbastecimiento = async (plan) => {
+    try {
+        const response = await fetch("http://localhost:8080/api/entrada-salida/plan-abastecimiento", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(plan),
+        });
+
+        if (!response.ok) throw new Error("Error al registrar plan de abastecimiento");
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        return null;
+    }
+};
+
+export const registrarPedidoProveedor = async (pedido) => {
+    try {
+        const response = await fetch("http://localhost:8080/api/entrada-salida/pedido", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(pedido),
+        });
+
+        if (!response.ok) throw new Error("Error al registrar pedido");
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        return null;
+    }
+};
+
+export const getHistorialPedidosProveedor = async () => {
+    try {
+        const response = await fetch("http://localhost:8080/api/entrada-salida/historial-pedidos");
+        if (!response.ok) throw new Error("Error al obtener historial de pedidos");
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        return [];
+    }
+};
+
+export const registrarRecepcionPedido = async (registro) => {
+    try {
+        const response = await fetch("http://localhost:8080/api/entrada-salida/pedido-recibido", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(registro),
+        });
+
+        if (!response.ok) throw new Error("Error al registrar la recepción del pedido");
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        return null;
+    }
+};
+
+export const getResumenMovimientosPorProducto = async (productoId) => {
+    try {
+        const response = await fetch(`http://localhost:8080/api/entrada-salida/resumen/${productoId}`);
+        if (!response.ok) throw new Error("Error al obtener resumen de movimientos");
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        return null;
+    }
+};
+

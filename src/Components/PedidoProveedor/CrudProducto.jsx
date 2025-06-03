@@ -7,6 +7,7 @@ function CrudProducto() {
     const [nombre, setNombre] = useState('');
     const [precio, setPrecio] = useState('');
     const [cantidad, setCantidad] = useState('');
+    const [minimoPedido, setMinimoPedido] = useState('');
     const [marca, setMarca] = useState('');
     const [fechaVencimiento, setFechaV] = useState('');
     const [estado, setEstado] = useState("perdidos");
@@ -18,6 +19,7 @@ function CrudProducto() {
             marca,
             fechaVencimiento,
             estado,
+            minimoPedido: 1
         };
         registerProduct(producto).then(r => {});
     };
@@ -85,6 +87,7 @@ function CrudProducto() {
                     />
 
                 </div>
+
                 <div className="inputBox">
                     <span>Estado</span>
                     <select className={"selectEstado"} value={estado} onChange={(e) => setEstado(e.target.value)}>

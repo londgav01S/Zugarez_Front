@@ -13,7 +13,7 @@ const DetalleInventarioView = () => {
     const [products, setProducts] = useState([]); // Lista de productos
     const [selectedDetail, setSelectedDetail] = useState(null);
     const [formData, setFormData] = useState({
-        productId: "",
+        id: "",
         cantidad: 0,
         caducados: 0,
         disponibles: 0,
@@ -50,7 +50,7 @@ const DetalleInventarioView = () => {
     const openCreateModal = () => {
         setSelectedDetail(null);
         setFormData({
-            productId: "",
+            id: "",
             cantidad: 0,
             caducados: 0,
             disponibles: 0,
@@ -69,7 +69,7 @@ const DetalleInventarioView = () => {
 
     // Guardar o actualizar detalle
     const handleSave = async () => {
-        if (!formData.productId) {
+        if (!formData.id) {
             alert("Selecciona un producto antes de guardar.");
             return;
         }
@@ -77,7 +77,14 @@ const DetalleInventarioView = () => {
         if (selectedDetail) {
             await updateInventoryDetail(selectedDetail.id, formData);
         } else {
-            await createInventoryDetail(formData.productId, formData);
+            await createInventoryDetail(formData.productoId, {
+                cantidad: formData.cantidad,
+                caducados: formData.caducados,
+                disponibles: formData.disponibles,
+                vendidos: formData.vendidos,
+                perdidos: formData.perdidos
+            });
+
         }
 
         fetchInventoryDetails();
@@ -138,7 +145,7 @@ const DetalleInventarioView = () => {
 
                         {/* Seleccionar producto en vez de escribir ID */}
                         <label>Producto:</label>
-                        <select name="productId" value={formData.productId} onChange={handleChange}>
+                        <select name="productId" value={formData.id} onChange={handleChange}>
                             <option value="">Seleccione un producto</option>
                             {products.map((product) => (
                                 <option key={product.id} value={product.id}>{product.nombre}</option>
